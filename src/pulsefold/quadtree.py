@@ -5,6 +5,16 @@ from pulsefold.frameloader import FrameStack
 
 GridCell = tuple[int, int, int, int]
 
+def _spatial_average(frames: FrameStack, factor: int, counts: np.ndarray, dtype=np.float64) -> FrameStack:
+    array = np.asarray(frames.frames).astype(dtype)
+    y_indicies = np.arange(0, frames.height, factor)
+    x_indicies = np.arange(0, frames.width, factor)
+
+    frames.frames = np.add.reduceat(np.add.reduceat(array, y_indicies, axis=1), x_indicies, axis=2) / counts
+    _, frames.height, frames.shape = frames.frames.shape
+
+    return frames
+
 def _factored_pixel_counts(height: int, width: int, factor: int) -> np.ndarray:
     if factor < 1:
         raise ValueError("spatial factor must be at least 1")
@@ -19,6 +29,7 @@ def _factored_pixel_counts(height: int, width: int, factor: int) -> np.ndarray:
 
 def build_quadtree(frames: FrameStack, leaves:int, base_cell_factor:int) -> np.ndarray:
 
-    print(_factored_pixel_counts(frames.height, frames.width, base_cell_factor))
+    counts = _factored_pixel_counts(frames.height, frames.width, base_cell_factor)
+    print(_spatial_average(frames, base_cell_factor, counts))
 
     return np.empty([1])

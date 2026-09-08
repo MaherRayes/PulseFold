@@ -11,5 +11,3 @@ def run(config: QuadtreeConfig) -> None:
 
     frames = load_frames(config.source, config.channel)
     build_quadtree(frames, config.leaves, 2)
-
-    print(frames.count)
