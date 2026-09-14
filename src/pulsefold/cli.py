@@ -14,7 +14,9 @@ def create_parser() -> argparse.ArgumentParser:
     quadtree_mode.add_argument("--src", required=True, type=Path, help="Path to source sequence")
     quadtree_mode.add_argument("--timestamps", required=False, type=Path, help="Path to timestamps of the sequence")
     quadtree_mode.add_argument("--channel", required=False, type=str, default="all", choices=[e.name.lower() for e in ColorChannel], help="Compress specific channel")
-    quadtree_mode.add_argument("--quad-leaves", required=False, type=int, default=34000, help="Number of quadtree leaves (Directly corresponds to the size)")
+    quadtree_mode.add_argument("--leaf-budget", required=False, type=int, default=34000, help="Number of quadtree leaves (Directly corresponds to the size)")
+    quadtree_mode.add_argument("--unguided-node-percentage", required=False, type=float, default=0.5, help="Percentage of the quadtree leaves that get allocated unguided at the start")
+    quadtree_mode.add_argument("--temporal-weight", required=False, type=float, default=8.0, help="Weight of temporal error to static error when building the quadtree")
     quadtree_mode.add_argument("--dtype", required=False, type=str, default="uint8", choices=[e.name.lower() for e in DataType], help="Type of stored data")
     quadtree_mode.add_argument("--out", required=True, type=Path, help="Path to export the compressed file")
 
@@ -29,7 +31,9 @@ def main() -> None:
         source=args.src,
         timestamps=args.timestamps,
         channel=ColorChannel[args.channel.upper()],
-        leaves=args.quad_leaves,
+        leaves=args.leaf_budget,
+        unguided_nodes=args.unguided_node_percentage,
+        temporal_weight=args.temporal_weight,
         dtype=DataType[args.dtype.upper()],
         output=args.out
     )

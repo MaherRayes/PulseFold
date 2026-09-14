@@ -21,5 +21,7 @@ class QuadtreeConfig:
     timestamps: Path
     channel: ColorChannel
     leaves: int
+    unguided_nodes: float
+    temporal_weight: float
     dtype: DataType
     output: Path
